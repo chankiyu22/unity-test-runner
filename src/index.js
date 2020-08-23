@@ -17,18 +17,20 @@ async function action() {
   // Build docker image
   const actionImage = await Docker.build({ path: actionFolder, dockerfile, baseImage });
 
-  // Run docker image
-  await Docker.run(actionImage, {
-    workspace,
-    unityVersion,
-    projectPath,
-    testMode,
-    artifactsPath,
-    customParameters,
-  });
-
-  // Set output
-  await Output.setArtifactsPath(artifactsPath);
+  try {
+    // Run docker image
+    await Docker.run(actionImage, {
+      workspace,
+      unityVersion,
+      projectPath,
+      testMode,
+      artifactsPath,
+      customParameters,
+    });
+  } finally {
+    // Set output
+    await Output.setArtifactsPath(artifactsPath);
+  }
 }
 
 action().catch(error => {
